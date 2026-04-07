@@ -1,0 +1,17 @@
+# CHD API container — same as local mock API, with your secrets.
+#
+#   docker compose up --build -d
+#
+# Frontend: run separately (VITE_API_BASE_URL=http://localhost:8080 npm run dev)
+# or point the built static site at this host.
+services:
+  api:
+    build: .
+    image: chd-api:latest
+    ports:
+      - '8080:8080'
+    env_file:
+      - .env.local
+    environment:
+      PORT: '8080'
+      NODE_ENV: production

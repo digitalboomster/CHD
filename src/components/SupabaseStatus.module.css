@@ -1,0 +1,27 @@
+.line {
+  margin-top: var(--space-3);
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--chd-text-dim);
+  letter-spacing: 0.02em;
+}
+
+.lineOk {
+  composes: line;
+  color: var(--chd-green);
+}
+
+.lineWarn {
+  composes: line;
+  color: var(--chd-amber);
+}
+
+.lineErr {
+  composes: line;
+  color: var(--chd-red);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 9px;
+}

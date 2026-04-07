@@ -1,0 +1,137 @@
+.pageTitle {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 var(--space-2);
+  color: var(--chd-text);
+}
+
+.pageSub {
+  color: var(--chd-text-muted);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0 0 var(--space-5);
+  max-width: 70ch;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.chip {
+  min-height: 36px;
+  padding: 0 var(--space-4);
+  border-radius: 999px;
+  border: 1px solid var(--chd-border);
+  background: var(--chd-surface-raised);
+  color: var(--chd-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.chip:hover {
+  border-color: #484f58;
+  color: var(--chd-text-secondary);
+}
+
+.chipActive {
+  border-color: var(--chd-gold-muted);
+  background: var(--chd-gold-fill);
+  color: var(--chd-gold);
+}
+
+.tableWrap {
+  overflow: auto;
+  margin-bottom: var(--space-5);
+}
+
+.heatTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+.heatTable th {
+  text-align: center;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--chd-text-dim);
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--chd-border);
+  background: var(--chd-surface);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.heatTable th:first-child {
+  text-align: left;
+  padding-left: var(--space-3);
+}
+
+.heatTable td {
+  text-align: center;
+  padding: 10px var(--space-2);
+  border-bottom: 1px solid var(--chd-border-subtle);
+}
+
+.heatTable td:first-child {
+  text-align: left;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--chd-text);
+  padding-left: var(--space-3);
+}
+
+.cell {
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 380px);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (max-width: 1000px) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chartBox {
+  width: 100%;
+  height: 280px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
+}
+
+.exportBtn {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--chd-border);
+  background: var(--chd-surface-overlay);
+  color: var(--chd-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.exportBtn:hover {
+  border-color: var(--chd-gold-muted);
+  color: var(--chd-gold);
+}

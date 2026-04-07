@@ -1,0 +1,257 @@
+openapi: 3.0.3
+info:
+  title: CHD Quant Platform API
+  description: |
+    Read-first slice for dashboard and market strip. Extend with OMS, MIE, and auth as services land.
+  version: 0.1.0
+servers:
+  - url: https://api.chd.example.com
+    description: Production (example)
+  - url: http://localhost:8080
+    description: Local backend
+  - url: ''
+    description: Relative (Vite proxy / same origin)
+
+tags:
+  - name: System
+  - name: Funds
+  - name: Market
+
+paths:
+  /v1/health:
+    get:
+      tags: [System]
+      operationId: getHealth
+      summary: Liveness / version
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              examples:
+                default:
+                  value:
+                    status: ok
+                    version: '0.1.0'
+
+  /v1/funds:
+    get:
+      tags: [Funds]
+      operationId: listFunds
+      summary: All fund mandates (NAV snapshot)
+      responses:
+        '200':
+          description: Fund list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundListResponse'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /v1/funds/{fundId}:
+    get:
+      tags: [Funds]
+      operationId: getFund
+      summary: Single fund by id
+      parameters:
+        - $ref: '#/components/parameters/FundId'
+      responses:
+        '200':
+          description: Fund
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /v1/market/ticker:
+    get:
+      tags: [Market]
+      operationId: listMarketTicker
+      summary: Macro / market strip items
+      responses:
+        '200':
+          description: Ticker items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TickerResponse'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /v1/market/performance:
+    get:
+      tags: [Market]
+      operationId: getMarketPerformance
+      summary: Indexed performance series (executive chart)
+      parameters:
+        - name: range
+          in: query
+          description: Horizon label (server may ignore)
+          schema:
+            type: string
+            default: 12m
+      responses:
+        '200':
+          description: Monthly indexed points
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerformanceResponse'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  parameters:
+    FundId:
+      name: fundId
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^[a-z0-9-]+$'
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+
+  schemas:
+    ErrorBody:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+
+    HealthResponse:
+      type: object
+      required: [status, version]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded]
+        version:
+          type: string
+
+    MandateStatus:
+      type: string
+      description: UI mandate traffic light
+      enum: [in, watch, breach]
+
+    Fund:
+      type: object
+      required:
+        - id
+        - name
+        - mandate
+        - benchmark
+        - nav
+        - navChange
+        - ytd
+        - status
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        mandate:
+          type: string
+        benchmark:
+          type: string
+        nav:
+          type: number
+        navChange:
+          type: number
+          description: 1D NAV change in percent
+        ytd:
+          type: number
+          description: Year-to-date return percent
+        status:
+          $ref: '#/components/schemas/MandateStatus'
+
+    FundListResponse:
+      type: object
+      required: [funds]
+      properties:
+        funds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fund'
+
+    FundResponse:
+      type: object
+      required: [fund]
+      properties:
+        fund:
+          $ref: '#/components/schemas/Fund'
+
+    TickerDirection:
+      type: string
+      enum: [up, down, neutral]
+
+    TickerItem:
+      type: object
+      required: [label, value, changeText, direction]
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+        changeText:
+          type: string
+        direction:
+          $ref: '#/components/schemas/TickerDirection'
+
+    TickerResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TickerItem'
+
+    PerformancePoint:
+      type: object
+      required: [m, paramount, bond, mmf, asi, ntb]
+      properties:
+        m:
+          type: string
+          description: Month label
+        paramount:
+          type: number
+        bond:
+          type: number
+        mmf:
+          type: number
+        asi:
+          type: number
+        ntb:
+          type: number
+
+    PerformanceResponse:
+      type: object
+      required: [points]
+      properties:
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerformancePoint'
